@@ -1,20 +1,31 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Read Article</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <h1>📰 Article Details</h1>
+  <div class="navbar">
+    <h2>📰 Smart News AI</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
 
-  <div id="articleBox" class="card"></div>
+  <div class="container">
+    <div id="articleBox" class="article-box">
+      <div class="loading">Loading article...</div>
+    </div>
 
-  <br>
-  <a href="index.html">⬅ Back to Home</a>
+    <a class="back-link" href="index.html">⬅ Back to Home</a>
+  </div>
 
   <script>
     const API = "http://127.0.0.1:5000";
+    const USER_ID = 1;
 
     function getArticleId() {
       const params = new URLSearchParams(window.location.search);
@@ -25,35 +36,138 @@
       const articleId = getArticleId();
 
       if (!articleId) {
-        document.getElementById("articleBox").innerHTML = "<h3>No Article ID Found</h3>";
+        document.getElementById("articleBox").innerHTML = "<h2>No Article Found</h2>";
         return;
       }
 
-      let res = await fetch(`${API}/article/${articleId}?user_id=1`);
+      let res = await fetch(`${API}/article/${articleId}?user_id=${USER_ID}`);
       let article = await res.json();
 
       document.getElementById("articleBox").innerHTML = `
-        <h2>${article.title}</h2>
+        <h1>${article.title}</h1>
         <p><b>Category:</b> ${article.category}</p>
         <p><b>Status:</b> ${article.is_fake ? "⚠️ Fake News" : "✅ Real News"}</p>
         <hr>
         <p>${article.content}</p>
 
-        <button onclick="likeArticle(${article.article_id})">👍 Like</button>
+        <div class="btn-row">
+          <button class="btn-like" onclick="likeArticle(${article.article_id})">👍 Like</button>
+        </div>
       `;
     }
 
     async function likeArticle(articleId) {
       await fetch(`${API}/like/${articleId}`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({user_id: 1})
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: USER_ID })
       });
 
       alert("✅ Article Liked!");
     }
 
     loadArticle();
+  </script>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Read Article</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h2>📰 Smart News AI</h2>
+
+    <div class="navbar-right">
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="articleBox" class="article-box">
+      <div class="loading">Loading article...</div>
+    </div>
+
+    <a class="back-link" href="index.html">⬅ Back to Home</a>
+  </div>
+
+  <div class="footer">
+    Smart News System © 2026
+  </div>
+
+  <!-- IMPORTANT: defer ensures script loads before functions are used -->
+  <script src="script.js" defer></script>
+
+  <script>
+    const USER_ID = 1;
+    const API_LOCAL = "http://127.0.0.1:5000";
+
+    function getArticleId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    async function loadArticle() {
+      const articleId = getArticleId();
+
+      if (!articleId) {
+        document.getElementById("articleBox").innerHTML =
+          "<h2>❌ No Article ID Found</h2>";
+        return;
+      }
+
+      try {
+        let res = await fetch(`${API_LOCAL}/article/${articleId}?user_id=${USER_ID}`);
+
+        if (!res.ok) {
+          document.getElementById("articleBox").innerHTML =
+            `<h2>❌ Error: Unable to fetch article (Status ${res.status})</h2>`;
+          return;
+        }
+
+        let article = await res.json();
+
+        document.getElementById("articleBox").innerHTML = `
+          <h1>${article.title}</h1>
+          <p><b>Category:</b> ${article.category}</p>
+          <p><b>Status:</b> ${article.is_fake ? "⚠️ Fake News" : "✅ Real News"}</p>
+          <hr>
+          <p>${article.content}</p>
+
+          <div class="btn-row">
+            <button class="btn-like" onclick="handleLike(${article.article_id})">👍 Like</button>
+          </div>
+        `;
+
+      } catch (error) {
+        document.getElementById("articleBox").innerHTML =
+          `<h2>❌ API Connection Failed</h2>
+           <p>Make sure backend is running on port 5000.</p>`;
+      }
+    }
+
+    function handleLike(articleId) {
+      if (typeof likeArticle === "function") {
+        likeArticle(articleId);
+      } else {
+        alert("❌ likeArticle() not found. script.js is not loading properly.");
+      }
+    }
+
+    // Apply theme safely (if function exists)
+    window.onload = function () {
+      if (typeof applyTheme === "function") {
+        applyTheme();
+      }
+      loadArticle();
+    };
   </script>
 
 </body>

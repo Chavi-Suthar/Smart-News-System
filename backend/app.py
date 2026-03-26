@@ -47,7 +47,14 @@ def add_article():
     content = data.get("content")
     category = data.get("category", "General")
 
-    is_fake = predict_fake(content)
+    # is_fake = predict_fake(content)
+
+    is_fake = data.get("is_fake")
+
+    if is_fake is None:
+        is_fake = predict_fake(content)
+    else:
+        is_fake = int(is_fake)
 
     conn = get_connection()
     cur = conn.cursor()

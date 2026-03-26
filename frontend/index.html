@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Smart News System</title>
@@ -7,91 +7,110 @@
 
 <body>
 
-  <h1>📰 Smart News Analysis & Recommendation System</h1>
-
-  <div style="margin-bottom: 20px;">
-    <a href="dashboard.html" style="font-size:18px;">📊 Go to Dashboard</a>
+  <div class="navbar">
+    <h2>📰 Smart News AI</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
   </div>
 
-  <h2>🔥 Trending News</h2>
-  <div id="trending"></div>
+  <div class="container">
 
-  <h2>📰 All Articles</h2>
-  <div id="articles"></div>
+    <div class="heading">
+      <h1>🔥 Trending News</h1>
+    </div>
 
+    <div id="trending" class="grid"></div>
+
+    <h2 class="section-title">📰 Explore All Articles</h2>
+
+    <div class="heading">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search articles..." onkeyup="filterArticles()">
+        <select id="categoryFilter" onchange="filterArticles()">
+          <option value="All">All Categories</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="articles" class="grid"></div>
+
+  </div>
+
+  <div class="footer">
+    Smart News System © 2026 | DBMS + AI + Trending + Recommendation
+  </div>
+
+  <script src="script.js"></script>
   <script>
-    const API = "http://127.0.0.1:5000";
+    loadTrending();
+    loadArticles();
+  </script>
 
-    async function loadTrending() {
-      let res = await fetch(`${API}/trending`);
-      let data = await res.json();
+</body>
+</html> -->
 
-      let html = "";
 
-      if (data.length === 0) {
-        html = "<p>No trending articles yet.</p>";
-      } else {
-        data.forEach(a => {
-          html += `
-            <div class="card">
-              <h3>${a.title}</h3>
-              <p><b>Category:</b> ${a.category}</p>
-              <p><b>Fake:</b> ${a.is_fake ? "⚠️ YES (Fake News)" : "✅ NO (Real News)"}</p>
-              <p><b>Trending Score:</b> ${a.score.toFixed(2)}</p>
 
-              <a href="article.html?id=${a.article_id}">
-                <button>Read Full Article</button>
-              </a>
-            </div>
-          `;
-        });
-      }
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart News System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
-      document.getElementById("trending").innerHTML = html;
-    }
+<body onload="applyTheme()">
 
-    async function loadArticles() {
-      let res = await fetch(`${API}/articles`);
-      let data = await res.json();
+  <div class="navbar">
+    <h2>📰 Smart News AI</h2>
 
-      let html = "";
+    <div class="navbar-right">
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+  </div>
 
-      if (data.length === 0) {
-        html = "<p>No articles found. Add some articles first.</p>";
-      } else {
-        data.forEach(a => {
-          html += `
-            <div class="card">
-              <h3>${a.title}</h3>
-              <p>${a.content.substring(0, 150)}...</p>
+  <div class="container">
 
-              <p><b>Category:</b> ${a.category}</p>
-              <p><b>Status:</b> ${a.is_fake ? "⚠️ Fake News" : "✅ Real News"}</p>
+    <div class="heading">
+      <h1>🔥 Trending News</h1>
+    </div>
 
-              <a href="article.html?id=${a.article_id}">
-                <button>Read</button>
-              </a>
+    <div id="trending" class="grid"></div>
 
-              <button onclick="likeArticle(${a.article_id})">👍 Like</button>
-            </div>
-          `;
-        });
-      }
+    <h2 class="section-title">📰 Explore All Articles</h2>
 
-      document.getElementById("articles").innerHTML = html;
-    }
+    <div class="heading">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search articles..." onkeyup="filterArticles()">
+        <select id="categoryFilter" onchange="filterArticles()">
+          <option value="All">All Categories</option>
+        </select>
+      </div>
+    </div>
 
-    async function likeArticle(articleId) {
-      await fetch(`${API}/like/${articleId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: 1 })
-      });
+    <div id="articles" class="grid"></div>
 
-      alert("✅ Article Liked!");
-      loadTrending(); // refresh trending scores
-    }
+  </div>
 
+  <div class="footer">
+    Smart News System © 2026 | DBMS + AI + Trending + Recommendation
+  </div>
+
+  <!-- FAKE NEWS WARNING MODAL -->
+  <div id="fakeNewsModal" class="modal-overlay">
+    <div class="modal-box">
+      <h2>⚠️ Fake News Alert</h2>
+      <p><b id="fakeNewsTitle"></b></p>
+      <p>This article is predicted as fake news by the AI system. Please read carefully.</p>
+      <button class="modal-btn" onclick="closeFakeNewsPopup()">OK</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
     loadTrending();
     loadArticles();
   </script>

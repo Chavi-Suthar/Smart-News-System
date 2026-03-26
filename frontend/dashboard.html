@@ -1,73 +1,93 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h2>📰 Smart News AI</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>📊 Personalized Dashboard</h1>
+
+    <h2 class="section-title">🔥 Trending News</h2>
+    <div id="dashboardTrending" class="grid"></div>
+
+    <h2 class="section-title">🧠 Recommended For You</h2>
+    <div id="dashboardRecommend" class="grid"></div>
+
+    <a class="back-link" href="index.html">⬅ Back to Home</a>
+  </div>
+
+  <div class="footer">
+    Smart News System © 2026 | Recommendations Powered by AI
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    loadDashboard();
+  </script>
+
+</body>
+</html> -->
+
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>User Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-  <h1>📊 Dashboard</h1>
+<body onload="applyTheme()">
 
-  <h2>🔥 Trending News</h2>
-  <div id="trendingBox"></div>
+  <div class="navbar">
+    <h2>📰 Smart News AI</h2>
 
-  <h2>🧠 Recommended For You</h2>
-  <div id="recommendBox"></div>
+    <div class="navbar-right">
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+  </div>
 
-  <br>
-  <a href="index.html">⬅ Back to Home</a>
+  <div class="container">
+    <h1>📊 Personalized Dashboard</h1>
 
+    <h2 class="section-title">🔥 Trending News</h2>
+    <div id="dashboardTrending" class="grid"></div>
+
+    <h2 class="section-title">🧠 Recommended For You</h2>
+    <div id="dashboardRecommend" class="grid"></div>
+
+    <a class="back-link" href="index.html">⬅ Back to Home</a>
+  </div>
+
+  <div class="footer">
+    Smart News System © 2026 | Recommendations Powered by AI
+  </div>
+
+  <!-- FAKE NEWS WARNING MODAL -->
+  <div id="fakeNewsModal" class="modal-overlay">
+    <div class="modal-box">
+      <h2>⚠️ Fake News Alert</h2>
+      <p><b id="fakeNewsTitle"></b></p>
+      <p>This article is predicted as fake news by the AI system. Please read carefully.</p>
+      <button class="modal-btn" onclick="closeFakeNewsPopup()">OK</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
   <script>
-    const API = "http://127.0.0.1:5000";
-    const USER_ID = 1;
-
-    async function loadTrending() {
-      let res = await fetch(`${API}/trending`);
-      let data = await res.json();
-
-      let html = "";
-      data.forEach(a => {
-        html += `
-          <div class="card">
-            <h3>${a.title}</h3>
-            <p><b>Category:</b> ${a.category}</p>
-            <p><b>Fake:</b> ${a.is_fake ? "⚠️ YES" : "✅ NO"}</p>
-            <p><b>Score:</b> ${a.score.toFixed(2)}</p>
-            <a href="article.html?id=${a.article_id}">Read More</a>
-          </div>
-        `;
-      });
-
-      document.getElementById("trendingBox").innerHTML = html;
-    }
-
-    async function loadRecommendations() {
-      let res = await fetch(`${API}/recommend/${USER_ID}`);
-      let data = await res.json();
-
-      if (data.length === 0) {
-        document.getElementById("recommendBox").innerHTML =
-          "<p>No recommendations yet. Read some articles first.</p>";
-        return;
-      }
-
-      let html = "";
-      data.forEach(a => {
-        html += `
-          <div class="card">
-            <h3>${a.title}</h3>
-            <p><b>Category:</b> ${a.category}</p>
-            <p><b>Fake:</b> ${a.is_fake ? "⚠️ YES" : "✅ NO"}</p>
-            <a href="article.html?id=${a.article_id}">Read More</a>
-          </div>
-        `;
-      });
-
-      document.getElementById("recommendBox").innerHTML = html;
-    }
-
-    loadTrending();
-    loadRecommendations();
+    loadDashboard();
   </script>
 
 </body>
