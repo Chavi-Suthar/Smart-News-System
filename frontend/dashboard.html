@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>📊 Dashboard</h1>
+
+  <h2>🔥 Trending News</h2>
+  <div id="trendingBox"></div>
+
+  <h2>🧠 Recommended For You</h2>
+  <div id="recommendBox"></div>
+
+  <br>
+  <a href="index.html">⬅ Back to Home</a>
+
+  <script>
+    const API = "http://127.0.0.1:5000";
+    const USER_ID = 1;
+
+    async function loadTrending() {
+      let res = await fetch(`${API}/trending`);
+      let data = await res.json();
+
+      let html = "";
+      data.forEach(a => {
+        html += `
+          <div class="card">
+            <h3>${a.title}</h3>
+            <p><b>Category:</b> ${a.category}</p>
+            <p><b>Fake:</b> ${a.is_fake ? "⚠️ YES" : "✅ NO"}</p>
+            <p><b>Score:</b> ${a.score.toFixed(2)}</p>
+            <a href="article.html?id=${a.article_id}">Read More</a>
+          </div>
+        `;
+      });
+
+      document.getElementById("trendingBox").innerHTML = html;
+    }
+
+    async function loadRecommendations() {
+      let res = await fetch(`${API}/recommend/${USER_ID}`);
+      let data = await res.json();
+
+      if (data.length === 0) {
+        document.getElementById("recommendBox").innerHTML =
+          "<p>No recommendations yet. Read some articles first.</p>";
+        return;
+      }
+
+      let html = "";
+      data.forEach(a => {
+        html += `
+          <div class="card">
+            <h3>${a.title}</h3>
+            <p><b>Category:</b> ${a.category}</p>
+            <p><b>Fake:</b> ${a.is_fake ? "⚠️ YES" : "✅ NO"}</p>
+            <a href="article.html?id=${a.article_id}">Read More</a>
+          </div>
+        `;
+      });
+
+      document.getElementById("recommendBox").innerHTML = html;
+    }
+
+    loadTrending();
+    loadRecommendations();
+  </script>
+
+</body>
+</html>

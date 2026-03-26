@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Read Article</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>📰 Article Details</h1>
+
+  <div id="articleBox" class="card"></div>
+
+  <br>
+  <a href="index.html">⬅ Back to Home</a>
+
+  <script>
+    const API = "http://127.0.0.1:5000";
+
+    function getArticleId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    async function loadArticle() {
+      const articleId = getArticleId();
+
+      if (!articleId) {
+        document.getElementById("articleBox").innerHTML = "<h3>No Article ID Found</h3>";
+        return;
+      }
+
+      let res = await fetch(`${API}/article/${articleId}?user_id=1`);
+      let article = await res.json();
+
+      document.getElementById("articleBox").innerHTML = `
+        <h2>${article.title}</h2>
+        <p><b>Category:</b> ${article.category}</p>
+        <p><b>Status:</b> ${article.is_fake ? "⚠️ Fake News" : "✅ Real News"}</p>
+        <hr>
+        <p>${article.content}</p>
+
+        <button onclick="likeArticle(${article.article_id})">👍 Like</button>
+      `;
+    }
+
+    async function likeArticle(articleId) {
+      await fetch(`${API}/like/${articleId}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({user_id: 1})
+      });
+
+      alert("✅ Article Liked!");
+    }
+
+    loadArticle();
+  </script>
+
+</body>
+</html>
