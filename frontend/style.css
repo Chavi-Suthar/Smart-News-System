@@ -1,0 +1,16 @@
+body {
+  font-family: Arial;
+  margin: 20px;
+}
+
+.card {
+  border: 1px solid gray;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 8px;
+}
+button {
+  padding: 6px 12px;
+  margin: 5px;
+  cursor: pointer;
+}
